@@ -14,6 +14,7 @@
   "dependencies": {
     "@base-ui/react": "^1.8.0",
     "@shadcn/react": "^0.3.1",
+    "@repo/db": "workspace:*",
     "@workspace/ui": "workspace:*",
     "cmdk": "^1.1.1",
     "cn": "^0.4.0",
