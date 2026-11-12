@@ -4,7 +4,7 @@
   "globalEnv": ["DATABASE_URL"],
   "tasks": {
     "build": {
-      "dependsOn": ["^build", "^contract:emit"],
+      "dependsOn": ["^build", "^db:generate"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**"]
     },
@@ -12,28 +12,27 @@
       "dependsOn": ["^lint"]
     },
     "check-types": {
-      "dependsOn": ["^check-types", "^contract:emit"]
+      "dependsOn": ["^check-types", "^db:generate"]
     },
     "format": {
       "dependsOn": ["^format"]
     },
     "typecheck": {
-      "dependsOn": ["^typecheck"]
+      "dependsOn": ["^typecheck", "^db:generate"]
     },
     "dev": {
-      "dependsOn": ["^contract:emit"],
+      "dependsOn": ["^db:generate"],
       "cache": false,
       "persistent": true
     },
-    "contract:emit": {
-      "inputs": ["src/prisma/contract.prisma", "prisma.config.ts"],
-      "outputs": ["src/prisma/contract.json", "src/prisma/contract.d.ts"]
-    },
-    "migration:plan": {
-      "dependsOn": ["contract:emit"],
-      "cache": false
+    "db:generate": {
+      "inputs": ["prisma/schema.prisma", "prisma.config.ts"],
+      "outputs": ["src/generated/prisma/**"]
     },
     "db:migrate": {
+      "cache": false
+    },
+    "db:deploy": {
       "cache": false
     }
   }
