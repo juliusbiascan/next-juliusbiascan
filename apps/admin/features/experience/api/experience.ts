@@ -7,7 +7,7 @@ import {
   portfolioQueryKey,
   portfolioQueryOptions,
 } from "@/features/site/api/portfolio"
-import { saveExperience, saveSkills } from "@/lib/portfolio-actions"
+import { saveExperience } from "@/lib/portfolio-actions"
 
 import { getExperience } from "../services/get-experience"
 
@@ -28,20 +28,6 @@ export function useSaveExperience() {
       if (!result.ok) return
       queryClient.setQueryData<PortfolioContent>(portfolioQueryKey, (current) =>
         current ? { ...current, experience: result.data.experience } : current
-      )
-    },
-  })
-}
-
-export function useSaveSkills() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: saveSkills,
-    onSuccess: (result) => {
-      if (!result.ok) return
-      queryClient.setQueryData<PortfolioContent>(portfolioQueryKey, (current) =>
-        current ? { ...current, skills: result.data.skills } : current
       )
     },
   })

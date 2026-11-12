@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import type { PortfolioContent } from "@repo/db/portfolio"
 import { Pencil, Plus, Trash2 } from "lucide-react"
 import { useState } from "react"
-import { useFieldArray, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import {
@@ -17,14 +17,6 @@ import {
   AlertDialogTitle,
 } from "@workspace/ui/components/alert-dialog"
 import { Button } from "@workspace/ui/components/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card"
 import {
   Dialog,
   DialogContent,
@@ -47,11 +39,9 @@ import { TextAreaField, TextField } from "@/features/site/components/form-fields
 import {
   useExperience,
   useSaveExperience,
-  useSaveSkills,
 } from "@/features/experience/api/experience"
 
 type Role = PortfolioContent["experience"][number]
-type SkillGroup = PortfolioContent["skills"][number]
 
 const roleFormSchema = z.object({
   id: z.string().min(1),
@@ -71,52 +61,19 @@ const emptyRole = (): RoleFormValues => ({
   summary: "",
 })
 
-const skillsFormSchema = z.object({
-  skills: z.array(
-    z.object({
-      title: z.string().trim().min(1, "Title is required"),
-      items: z.string().trim().min(1, "Add at least one skill"),
-    })
-  ),
-})
-
-type SkillsFormValues = z.infer<typeof skillsFormSchema>
-
-function toSkillForm(skills: SkillGroup[]): SkillsFormValues {
-  return {
-    skills: skills.map((group) => ({
-      title: group.title,
-      items: group.items.join("\n"),
-    })),
-  }
-}
-
 export function ExperienceEditor() {
   const { data } = useExperience()
   if (!data) return null
-  return <ExperienceForm experience={data.jobs} skills={data.skills} />
+  return <ExperienceForm experience={data.jobs} />
 }
 
 function ExperienceForm({
   experience: initialExperience,
-  skills: initialSkills,
 }: {
   experience: Role[]
-  skills: SkillGroup[]
 }) {
   const [experience, setExperience] = useState(initialExperience)
-  const [skillsMessage, setSkillsMessage] = useState<string | null>(null)
-  const [skillsError, setSkillsError] = useState<string | null>(null)
-  const saveSkills = useSaveSkills()
   const saveExperience = useSaveExperience()
-  const skillsForm = useForm<SkillsFormValues>({
-    resolver: zodResolver(skillsFormSchema),
-    defaultValues: toSkillForm(initialSkills),
-  })
-  const skillGroups = useFieldArray({
-    control: skillsForm.control,
-    name: "skills",
-  })
   const [editing, setEditing] = useState<RoleFormValues | null>(null)
   const [pendingDelete, setPendingDelete] = useState<Role | null>(null)
   const [message, setMessage] = useState<string | null>(null)
@@ -146,32 +103,6 @@ function ExperienceForm({
           setEditing(null)
           setPendingDelete(null)
           setMessage("Saved. The public experience page will update.")
-        },
-      }
-    )
-  }
-
-  function onSaveSkills(values: SkillsFormValues) {
-    setSkillsMessage(null)
-    setSkillsError(null)
-    const skills = values.skills.map((group) => ({
-      title: group.title.trim(),
-      items: group.items
-        .split("\n")
-        .map((item) => item.trim())
-        .filter(Boolean),
-    }))
-
-    saveSkills.mutate(
-      { skills },
-      {
-        onSuccess: (result) => {
-          if (!result.ok) {
-            setSkillsError(result.message)
-            return
-          }
-          skillsForm.reset(toSkillForm(result.data.skills))
-          setSkillsMessage("Saved. The public experience page will update.")
         },
       }
     )
@@ -246,71 +177,6 @@ function ExperienceForm({
           </TableBody>
         </Table>
       </div>
-
-      <form
-        onSubmit={skillsForm.handleSubmit(onSaveSkills)}
-        className="flex flex-col gap-4"
-      >
-        <div className="grid gap-4 sm:grid-cols-2">
-          {skillGroups.fields.map((field, index) => (
-            <Card key={field.id}>
-              <CardHeader>
-                <CardTitle>Skill group</CardTitle>
-                <CardDescription>
-                  One skill per line. Shown with these roles on the public
-                  experience page and in the home marquee.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <FieldGroup>
-                  <TextField
-                    control={skillsForm.control}
-                    name={`skills.${index}.title`}
-                    label="Title"
-                    id={`experience-skill-title-${field.id}`}
-                  />
-                  <TextAreaField
-                    control={skillsForm.control}
-                    name={`skills.${index}.items`}
-                    label="Skills"
-                    id={`experience-skill-items-${field.id}`}
-                    placeholder={"Next.js\nTypeScript"}
-                  />
-                </FieldGroup>
-              </CardContent>
-              <CardFooter>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => skillGroups.remove(index)}
-                >
-                  <Trash2 />
-                  Remove group
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => skillGroups.append({ title: "", items: "" })}
-          >
-            <Plus />
-            Add skill group
-          </Button>
-          <Button type="submit" disabled={saveSkills.isPending}>
-            {saveSkills.isPending ? "Saving..." : "Save skill groups"}
-          </Button>
-          {skillsMessage ? (
-            <p className="text-sm text-muted-foreground">{skillsMessage}</p>
-          ) : null}
-          {skillsError ? (
-            <p className="text-sm text-destructive">{skillsError}</p>
-          ) : null}
-        </div>
-      </form>
 
       <Dialog
         open={editing !== null}

@@ -12,7 +12,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@workspace/ui/components/card"
@@ -40,12 +39,6 @@ const homeFormSchema = z.object({
       })
     )
     .min(1, "Add at least one link"),
-  skills: z.array(
-    z.object({
-      title: z.string().trim().min(1, "Title is required"),
-      items: z.string().trim().min(1, "Add at least one skill"),
-    })
-  ),
 })
 
 type HomeFormValues = z.infer<typeof homeFormSchema>
@@ -58,10 +51,6 @@ function toFormValues(portfolio: HomeData): HomeFormValues {
     githubUsername: portfolio.github.username,
     githubHref: portfolio.github.href,
     navigation: portfolio.navigation.map((item) => ({ ...item })),
-    skills: portfolio.skills.map((group) => ({
-      title: group.title,
-      items: group.items.join("\n"),
-    })),
   }
 }
 
@@ -83,10 +72,6 @@ function HomeForm({ portfolio }: { portfolio: HomeData }) {
     control: form.control,
     name: "navigation",
   })
-  const skills = useFieldArray({
-    control: form.control,
-    name: "skills",
-  })
 
   function onSubmit(values: HomeFormValues) {
     setMessage(null)
@@ -100,13 +85,7 @@ function HomeForm({ portfolio }: { portfolio: HomeData }) {
         href: values.githubHref,
       },
       navigation: values.navigation,
-      skills: values.skills.map((group) => ({
-        title: group.title,
-        items: group.items
-          .split("\n")
-          .map((item) => item.trim())
-          .filter(Boolean),
-      })),
+      skills: portfolio.skills,
     })
 
     if (!parsed.success) {
@@ -226,58 +205,7 @@ function HomeForm({ portfolio }: { portfolio: HomeData }) {
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        {skills.fields.map((field, index) => (
-          <Card key={field.id}>
-            <CardHeader>
-              <CardTitle>Skill group</CardTitle>
-              <CardDescription>
-                One skill per line. These appear in the home marquee and on the
-                experience page.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <FieldGroup>
-                <TextField
-                  control={form.control}
-                  name={`skills.${index}.title`}
-                  label="Title"
-                  id={`skill-title-${field.id}`}
-                />
-                <TextAreaField
-                  control={form.control}
-                  name={`skills.${index}.items`}
-                  label="Skills"
-                  id={`skill-items-${field.id}`}
-                  placeholder={"Next.js\nTypeScript"}
-                />
-              </FieldGroup>
-            </CardContent>
-            <CardFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => skills.remove(index)}
-              >
-                <Trash2 />
-                Remove group
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-
       <div className="flex flex-wrap items-center gap-3">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() =>
-            skills.append({ title: "", items: "" })
-          }
-        >
-          <Plus />
-          Add skill group
-        </Button>
         <Button type="submit" disabled={saveHome.isPending}>
           {saveHome.isPending ? "Saving..." : "Save home section"}
         </Button>

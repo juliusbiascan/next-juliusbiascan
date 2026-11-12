@@ -4,6 +4,7 @@ import { cn } from "@workspace/ui/lib/utils"
 
 import { useGitHubActivity } from "../api/github"
 import { formatCount, formatDate, monthLabels } from "../utils/contributions"
+import { formatShare } from "../utils/languages"
 
 const LEVEL_CLASS = [
   "bg-muted",
@@ -20,6 +21,7 @@ export function GithubSectionFallback() {
       <div className="mt-4 h-8 w-72 max-w-full rounded-full bg-muted" />
       <div className="mt-4 h-4 w-96 max-w-full rounded-full bg-muted" />
       <div className="mt-10 h-28 rounded-md bg-muted" />
+      <div className="mt-8 h-36 rounded-md bg-muted" />
     </section>
   )
 }
@@ -39,6 +41,7 @@ export function GithubSection({
 
   const activity = data ?? null
   const labels = activity ? monthLabels(activity.weeks) : []
+  const languages = activity?.languages ?? []
   const stats = activity
     ? [
         { label: "Repositories", value: activity.repositories },
@@ -140,15 +143,61 @@ export function GithubSection({
         )}
       </div>
 
-      {stats.length > 0 ? (
-        <dl className="mt-8 grid grid-cols-3 gap-px border border-border bg-border">
-          {stats.map((stat) => (
-            <div key={stat.label} className="bg-background px-4 py-5 sm:px-6">
-              <dd className="text-2xl font-medium tabular-nums">{formatCount(stat.value)}</dd>
-              <dt className="mt-1 text-xs text-muted-foreground sm:text-sm">{stat.label}</dt>
+      {stats.length > 0 || languages.length > 0 ? (
+        <div className="mt-8 border border-border">
+          {stats.length > 0 ? (
+            <dl className="grid grid-cols-3 gap-px bg-border">
+              {stats.map((stat) => (
+                <div key={stat.label} className="bg-background px-4 py-5 sm:px-6">
+                  <dd className="text-2xl font-medium tabular-nums">
+                    {formatCount(stat.value)}
+                  </dd>
+                  <dt className="mt-1 text-xs text-muted-foreground sm:text-sm">
+                    {stat.label}
+                  </dt>
+                </div>
+              ))}
+            </dl>
+          ) : null}
+
+          {languages.length > 0 ? (
+            <div className="border-t border-border bg-background px-4 py-5 sm:px-6">
+              <div className="flex flex-wrap items-baseline justify-between gap-3">
+                <p className="text-sm text-foreground">Top languages</p>
+                <p className="text-xs text-muted-foreground">
+                  Share of code in public repositories
+                </p>
+              </div>
+              <div className="mt-4 flex h-2 overflow-hidden rounded-[2px]" aria-hidden="true">
+                {languages.map((language) => (
+                  <span
+                    key={language.name}
+                    className="h-full"
+                    style={{
+                      width: `${language.share}%`,
+                      backgroundColor: language.color,
+                    }}
+                  />
+                ))}
+              </div>
+              <ul className="mt-4 grid gap-x-8 gap-y-2 sm:grid-cols-2">
+                {languages.map((language) => (
+                  <li key={language.name} className="flex items-center gap-2 text-sm">
+                    <span
+                      className="size-2.5 shrink-0 rounded-[2px]"
+                      style={{ backgroundColor: language.color }}
+                      aria-hidden="true"
+                    />
+                    <span className="truncate">{language.name}</span>
+                    <span className="ml-auto tabular-nums text-muted-foreground">
+                      {formatShare(language.share)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
-          ))}
-        </dl>
+          ) : null}
+        </div>
       ) : null}
     </section>
   )

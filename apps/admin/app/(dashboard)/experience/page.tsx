@@ -6,7 +6,7 @@ export default function ExperiencePage() {
     <>
       <PageHeading
         title="Experience"
-        description="Roles and skill groups published on the public experience page."
+        description="Roles published on the public experience page."
       />
       <ExperienceEditor />
     </>

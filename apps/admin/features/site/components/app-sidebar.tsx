@@ -5,6 +5,7 @@ import {
   Briefcase,
   Contact,
   House,
+  Layers,
   LayoutDashboard,
   MessageCircle,
   FolderKanban,
@@ -27,6 +28,7 @@ const nav = [
   { title: "Home Section", url: "/home", icon: House },
   { title: "Projects", url: "/projects", icon: FolderKanban },
   { title: "Experience", url: "/experience", icon: Briefcase },
+  { title: "Skill groups", url: "/skills", icon: Layers },
   { title: "Contacts", url: "/contacts", icon: Contact },
   { title: "Chat", url: "/chat", icon: MessageCircle },
 ]

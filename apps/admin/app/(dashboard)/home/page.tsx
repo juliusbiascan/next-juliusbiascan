@@ -6,7 +6,7 @@ export default function HomeSectionPage() {
     <>
       <PageHeading
         title="Home Section"
-        description="Copy, navigation, and skills published on the portfolio home page."
+        description="Copy and navigation published on the portfolio home page."
       />
       <HomeEditor />
     </>

@@ -53,7 +53,7 @@ export function DashboardPage() {
     {
       label: "Skills",
       value: skillCount,
-      detail: `${portfolio.skills.length} groups on the home page`,
+      detail: `${portfolio.skills.length} groups on the skill groups page`,
       icon: Layers,
     },
   ]

@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import { Kode_Mono, Geist_Mono } from "next/font/google";
 
 import "@workspace/ui/globals.css"
 import { getPortfolio } from "@repo/db"
@@ -11,15 +11,15 @@ import { cn } from "@workspace/ui/lib/utils"
 
 export const dynamic = "force-dynamic"
 
-const geist = Geist({
+const fontSans = Kode_Mono({
   subsets: ["latin"],
   variable: "--font-sans",
-})
+});
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
-})
+});
 
 export async function generateMetadata(): Promise<Metadata> {
   const portfolio = await getPortfolio()
@@ -44,9 +44,9 @@ export default async function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased font-sans", fontMono.variable, geist.variable)}
+
     >
-      <body>
+      <body className={`${fontSans.variable} ${fontMono.variable} antialiased`}>
         <QueryProvider>
           <PortfolioProvider initial={portfolio}>
             <ThemeProvider>

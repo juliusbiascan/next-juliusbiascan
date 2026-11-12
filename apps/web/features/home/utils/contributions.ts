@@ -6,12 +6,19 @@ export type ContributionDay = {
 
 export type ContributionWeek = Array<ContributionDay | null>
 
+export type LanguageStat = {
+  name: string
+  share: number
+  color: string
+}
+
 export type GitHubActivity = {
   repositories: number
   stars: number
   followers: number
   total: number
   weeks: ContributionWeek[]
+  languages: LanguageStat[]
 }
 
 const MONTHS = [
