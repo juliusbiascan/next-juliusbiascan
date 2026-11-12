@@ -1,12 +1,16 @@
-# Prisma 8
+# Prisma 7
 
-Migration Plan
+Generate the client
 ```bash
-pnpm turbo run migration:plan --filter=@repo/db -- --name add-user-bio
+pnpm --filter @repo/db db:generate
 ```
 
-Migrate
+Create and apply a migration in development
 ```bash
-pnpm turbo run db:migrate --filter=@repo/db
-pnpm --filter @repo/db migration:status
+pnpm --filter @repo/db db:migrate
+```
+
+Apply committed migrations
+```bash
+pnpm --filter @repo/db db:deploy
 ```

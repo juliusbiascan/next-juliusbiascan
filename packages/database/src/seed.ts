@@ -1,9 +1,11 @@
 import { db } from "./index";
 
-const existing = await db.orm.public.User.select("id").all();
+const existing = await db.user.findMany({ select: { id: true } });
 if (existing.length === 0) {
-  await db.orm.public.User.create({ email: "alice@prisma.io", name: "Alice" });
-  await db.orm.public.User.create({ email: "bob@prisma.io", name: "Bob" });
+  await db.user.create({ data: { email: "alice@prisma.io", name: "Alice" } });
+  await db.user.create({ data: { email: "bob@prisma.io", name: "Bob" } });
 }
-console.log(await db.orm.public.User.select("id", "email", "name").all());
-await db.close();
+console.log(
+  await db.user.findMany({ select: { id: true, email: true, name: true } }),
+);
+await db.$disconnect();
