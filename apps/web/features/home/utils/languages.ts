@@ -41,6 +41,10 @@ export function formatShare(share: number) {
   return `${share.toFixed(1)}%`
 }
 
+export function favoriteLanguage(languages: LanguageStat[]) {
+  return languages.find((language) => language.name !== "Other") ?? null
+}
+
 export function summarizeLanguages(
   totals: Iterable<[string, number]>,
   limit = TOP_LANGUAGE_LIMIT

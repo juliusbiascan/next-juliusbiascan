@@ -20,7 +20,11 @@ export function HomePage() {
       <section className="overflow-x-clip bg-[linear-gradient(180deg,var(--background)_0%,var(--muted)_100%)] px-6 py-16 sm:px-10 sm:py-24">
         <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_19rem] lg:gap-10">
           <Hero profile={profile} />
-          <PortraitFeature name={profile.name} roles={profile.experience} />
+          <PortraitFeature
+            name={profile.name}
+            roles={profile.experience}
+            username={data.github.username}
+          />
         </div>
       </section>
 
