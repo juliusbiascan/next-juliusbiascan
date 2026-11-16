@@ -20,11 +20,13 @@ export function ContactPage() {
           <li key={item.label}>
             <a
               href={item.href}
-              className="flex items-baseline justify-between gap-6 px-6 py-4 text-sm transition-colors hover:bg-muted sm:px-10"
+              className="flex items-start justify-between gap-4 px-6 py-4 text-sm transition-colors hover:bg-muted sm:items-baseline sm:gap-6 sm:px-10"
               {...externalLinkProps(item.external)}
             >
-              <span>{item.label}</span>
-              <span className="text-right text-muted-foreground">{item.value}</span>
+              <span className="shrink-0">{item.label}</span>
+              <span className="min-w-0 text-right wrap-break-word text-muted-foreground">
+                {item.value}
+              </span>
             </a>
           </li>
         ))}

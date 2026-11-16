@@ -40,7 +40,7 @@ export function Hero({ profile }: { profile: Profile }) {
             <span className="absolute top-1/2 left-1/2 aspect-square w-[220%] -translate-x-1/2 -translate-y-1/2 animate-spin bg-[conic-gradient(from_0deg,transparent_0deg,transparent_220deg,#0091FF_250deg,#FF02F0_290deg,#F76808_325deg,#6647F0_350deg,transparent_360deg)] [animation-duration:3s]" />
           </span>
           <a
-            href="/julius-biascan-resume.pdf"
+            href="/RESUME.pdf"
             download="Julius-Biascan-Resume.pdf"
             className={cn(
               buttonVariants({ variant: "outline" }),
